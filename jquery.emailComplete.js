@@ -31,7 +31,7 @@
 		return this.each(function (e) {
 			var _this = $(this);
             var _parent = $(this).parent();
-			email.opts = $.extend({}, options, $.fn.emailComplete.defaults);// integration config
+			email.opts = $.extend({},  $.fn.emailComplete.defaults, options);// integration config
             email.obj = _this;
 			email.init();// init email
 
