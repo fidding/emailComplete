@@ -1,0 +1,30 @@
+{
+    "name": "emailComplete",
+    "title": "jQuery emailComplete",
+    "description": "jQuery Plugin for Email Complete",
+    "keywords": [
+        "email",
+        "complete"
+    ],
+    "version": "0.1.1",
+    "author": {
+        "name": "fidding",
+        "url": "https://github.com/fidding"
+    },
+    "maintainers": [
+        {
+            "name": "fidding",
+            "email": "395455856@qq.com",
+            "url": "http://www.fidding.me"
+        }
+    ],
+    "licenses": [
+    ],
+    "bugs": "https://github.com/fidding/emailComplete/issues",
+    "homepage": "https://github.com/fidding/emailComplete",
+    "docs": "https://github.com/fidding/emailComplete/readme.md",
+    "download": "https://github.com/fidding/emailComplete",
+    "dependencies": {
+        "jquery": ">=1.5"
+    }
+}
