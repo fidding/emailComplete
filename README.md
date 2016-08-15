@@ -5,10 +5,15 @@ jQuery Plugin for Email Complete
 demo address：https://fidding.github.io/emailComplete
 
 ## Usage
-
+with js
 ``` javascript
 $('element').emailComplete();
 
+```
+or with html
+
+``` html
+<input data-role="emailComplete" data-opacity="0.9" data-borderRadius="1" />
 ```
 
 ## Params
