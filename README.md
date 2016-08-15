@@ -13,7 +13,7 @@ $('element').emailComplete();
 
 ## Params
 
-``` json
+```javascript
 {
     opacity : 1, // email container opacity, default: 1
     borderRadius: 0, // email container border-radius (px) , default: 0
