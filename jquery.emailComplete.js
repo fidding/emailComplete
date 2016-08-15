@@ -1,14 +1,14 @@
 /*
  * jquery.emailComplete.js - jQuery Plugin for Email Complete
  *
- * Version: v2.1.1
+ * Version: v3.0.0
  *
  * Author: fidding
  * blog: http://www.fidding.me/
  * github: https://github.com/fidding/
  * email: 395455856@qq.com
  *
- * Licensed like jQuery, see http://docs.jquery.com/License
+ * Licensed MIT
  *
  * Build: 2016-08-08
  */
@@ -27,68 +27,93 @@
 })(function ($) {
     'use strict';
 
-	$.fn.emailComplete = function (options) {
-		return this.each(function (e) {
-			var _this = $(this);
-            var _parent = $(this).parent();
-			email.opts = $.extend({},  $.fn.emailComplete.defaults, options);// integration config
-            email.obj = _this;
-			email.init();// init email
+    var Fidding = function (element, options) {
+        var _this = this;
+        // integration config
+        _this.options = $.extend({}, Fidding.defaults, options);
+        _this.init(element);
+    }
 
-			$(window).resize(function () {
-				email.setPos(email.getPos());
-			});
-            // input event
-			_this.on('input', function (e) {
-				if(_this.val() == ''){
-					email.hidden();
-				}else{
-					email.onInput(e);
-				}
-			});
-            // keyup event
-			_this.on('keyup', function (e) {
-				if(_this.val() == ''){
-					email.hidden();
-				}else{
-					email.onKeyup(e);
-				}
-			});
-            // focus event
-			_this.on('focus', function () {
-				email.onFocus($(this));
-			});
-            // blur event
-			_this.on('blur', function () {
-				email.onBlur();
-			});
-            // item mouse event
-            _parent.on('mouseover', '.complete-item', function(e){
-				email.onMouseOver($(this));
-			});
-            // item mouse event
-			_parent.on('mousedown', '.complete-item', function(e){
-				email.onMouseDown($(this));
-			});
-            // prevent form submit
-            email.preventForm();
+    /**
+     * [plugin params]
+     */
+    Fidding.version = '3.0.0';//version
+    Fidding.pluginName = 'emailComplete';// plugin name
+    Fidding.dataName = "emailDataName";// dataName cache the data in dom
+    Fidding.options = {};// config
+    Fidding.active = -1;// active item index
 
-		});
-	}
+    /**
+     * [plugin element]
+     */
+    Fidding.$element = null;// email element
+    Fidding.$container = null;// email container
+    Fidding.$containerItem = null;// email container item
 
-	var email = {
-        opts: {},// config
-		obj : null,// email obj
-		container : null,// email container
-		containerItem : null,// email container item
-		active : -1,// active item index
+    /**
+     * [plugin defaults config]
+     */
+    Fidding.defaults = {
+		opacity : 1, // email container opacity
+		borderRadius: 0, // email container border-radius (px)
+		data : ['qq.com','163.com','126.com','sina.com','sohu.com'], // email suffix
+		callback : $.noop // callback
+
+    }
+
+    /**
+     * [plugin prototype function]
+     */
+    Fidding.prototype = {
         // init
-		init : function () {
+		init : function (element) {
             var _this = this;
-			_this.obj.after('<div class="complete-container" style="border-radius:'+_this.opts.borderRadius+'px;opacity:'+_this.opts.opacity+'"></div>');
-			_this.container = $('.complete-container');
-			_this.containerItem = this.container.find('div.complete-item');
-			_this.setPos(_this.getPos());// set position
+            // assignment objects
+            _this.$element = $(element);
+            _this.$parent = _this.$element.parent();
+			_this.$element.after('<div class="complete-container" style="border-radius:'+_this.options.borderRadius+'px;opacity:'+_this.options.opacity+'"></div>');
+            _this.$container = _this.$element.next( ".complete-container" );
+			_this.$containerItem = _this.$container.find('div.complete-item');
+            // set position
+			_this.setPos(_this.getPos());
+
+		    $(window).resize(function () {
+			    _this.setPos(_this.getPos());
+		    });
+            // input event
+		    _this.$element.on('input', function (e) {
+			    if(_this.$element.val() == ''){
+				    _this.hidden();
+			    }else{
+				    _this.onInput(e);
+			    }
+		    });
+            // keyup event
+		    _this.$element.on('keyup', function (e) {
+			    if(_this.$element.val() == ''){
+				    _this.hidden();
+			    }else{
+				    _this.onKeyup(e);
+			    }
+		    });
+            // focus event
+		    _this.$element.on('focus', function () {
+			    _this.onFocus($(this));
+		    });
+            // blur event
+		    _this.$element.on('blur', function () {
+			    _this.onBlur();
+		    });
+            // item mouse event
+            _this.$parent.on('mouseover', '.complete-item', function(e){
+			    _this.onMouseOver($(this));
+		    });
+            // item mouse event
+		    _this.$parent.on('mousedown', '.complete-item', function(e){
+			    _this.onMouseDown($(this));
+		    });
+            // prevent form submit
+            _this.preventForm();
 		},
         // item active
         addActive: function (item) {
@@ -101,51 +126,52 @@
         // get email position
 		getPos : function () {
             var _this = this;
-			var width = _this.obj.outerWidth(),
-			    height = _this.obj.outerHeight(),
-			    top = _this.obj.position().top+height+3,
-			    left = _this.obj.position().left;
+			var width = _this.$element.outerWidth(),
+			    height = _this.$element.outerHeight(),
+			    top = _this.$element.position().top+height+3,
+			    left = _this.$element.position().left;
 			return { top:top , left:left, width:width };
 		},
         // set email position
 		setPos : function(data){
             var _this = this;
-			_this.container.css({ top:data.top,left:data.left,width:data.width });
+			_this.$container.css({ top: data.top, left: data.left, width: data.width });
 		},
         // show email container
 		show : function(){
             var _this = this;
-			_this.container.css({'visibility':'visible'});
+			_this.$container.css({'visibility':'visible'});
 		},
         // hidden email container
 		hidden : function(){
             var _this = this;
-			_this.container.css({'visibility':'hidden'});
+			_this.$container.css({'visibility':'hidden'}).empty();
+            _this.$containerItem = _this.$container.find('div.complete-item');
 			_this.active = -1;
 		},
         // email text change
 		onInput : function(e){
             var _this = this;
 			_this.active = -1;
-			_this.container.empty();
+			_this.$container.empty();
 			var completeItem ='';
-			var index = _this.obj.val().indexOf('@');// weather has @
+			var index = _this.$element.val().indexOf('@');// weather has @
 			if(index != -1){// has @
-				var startVal = _this.obj.val().substring(0, index);// get the string before @
-				var endVal = _this.obj.val().substring(index+1,this.obj.val().length);// get the string after @
+				var startVal = _this.$element.val().substring(0, index);// get the string before @
+				var endVal = _this.$element.val().substring(index+1, _this.$element.val().length);// get the string after @
 				if(endVal == ''){
-                    //add all opts.data
-					$.each(_this.opts.data, function (n, value) {
+                    //add all options.data
+					$.each(_this.options.data, function (n, value) {
 						completeItem += '<div class="complete-item">'+startVal+'@'+value+'</div>';
 					});
 				}else{
 					var isHas = 0;
-					$.each(_this.opts.data, function (n, value) {
+					$.each(_this.options.data, function (n, value) {
 						if(value.indexOf(endVal) == 0){// there are compliant mail suffix
 							var itemContent = startVal+'@'+value;
 							if(isHas == 0){
 								completeItem += '<div class="complete-item complete-active" >'+itemContent+'</div>';
-								email.active = 0;
+								_this.active = 0;
 							}else{
 								completeItem += '<div class="complete-item" >'+itemContent+'</div>';
 							}
@@ -153,58 +179,58 @@
 						}
 					});
 					if(isHas == 0){// if no compliant mail suffix to hide email container
-						email.hidden();
+						_this.hidden();
 						return true;
 					}
 				}
 			}else{// no @
-				$.each(_this.opts.data, function (n,value) {
-					completeItem += '<div class="complete-item">'+_this.obj.val()+'@'+value+'</div>';
+				$.each(_this.options.data, function (n,value) {
+					completeItem += '<div class="complete-item">'+_this.$element.val()+'@'+value+'</div>';
 				});
 			}
-			_this.container.append(completeItem);
-			_this.containerItem = _this.container.find('div.complete-item');
+			_this.$container.append(completeItem);
+			_this.$containerItem = _this.$container.find('div.complete-item');
 			_this.show();// show email
 		},
         // keyboard operation event
 		onKeyup : function (e) {
             var _this = this;
-			if(_this.container.is(':visible')){
-				var itemLength = _this.containerItem.length;
+			if(_this.$element.is(':visible')){
+				var itemLength = _this.$containerItem.length;
 				switch (e.keyCode) {
 				case 13||10 :// enter
 					if(_this.active == -1){
 					}else{
-						_this.obj.val(_this.containerItem.eq(_this.active).html());
+						_this.$element.val(_this.$containerItem.eq(_this.active).html());
 						_this.hidden();
 						_this.onCallBack();
 					}
 					break;
 				case 38 :// up arrow
 					if(_this.active == -1){
-                        _this.addActive(_this.containerItem.eq(itemLength-1));
+                        _this.addActive(_this.$containerItem.eq(itemLength-1));
 						_this.active = itemLength-1;
 					}else{
 						if(_this.active-1 < 0){
-                            _this.removeActive(_this.containerItem.eq(_this.active));
+                            _this.removeActive(_this.$containerItem.eq(_this.active));
 							_this.active = -1;
 						}else{
-                            _this.removeActive(_this.containerItem.eq(_this.active));
-                            _this.addActive(_this.containerItem.eq(_this.active-1));
+                            _this.removeActive(_this.$containerItem.eq(_this.active));
+                            _this.addActive(_this.$containerItem.eq(_this.active-1));
 							_this.active--;
 						}
 					}
 					break;
 				case 40 :// down arrow
 					if(this.active == -1){
-                        _this.addActive(_this.containerItem.eq(0));
+                        _this.addActive(_this.$containerItem.eq(0));
 						_this.active = 0;
 					}else{
-                        _this.removeActive(_this.containerItem.eq(_this.active));
+                        _this.removeActive(_this.$containerItem.eq(_this.active));
 						if(_this.active+1 == itemLength){
 							_this.active = -1;
 						}else{
-                            _this.addActive(_this.containerItem.eq(_this.active+1));
+                            _this.addActive(_this.$containerItem.eq(_this.active+1));
 							_this.active++;
 						}
 					}
@@ -221,21 +247,21 @@
 		onBlur : function(){
             var _this = this;
 			_this.active = -1;
-			_this.container.remove();
+            _this.hidden();
 		},
         // email input focus event
 		onFocus : function(obj){
             var _this = this;
-			_this.obj = obj;//重新指定obj
-			if(_this.container.length){
-				_this.container.remove();
+			if(!_this.$containerItem.length){
+                _this.hidden();
+                return true;
 			}
-			_this.init();
+            _this.show();
 		},
         // item hover event
 		onMouseOver : function(obj){
             var _this = this;
-			_this.containerItem.each(function(e){
+			_this.$containerItem.each(function(e){
                 _this.removeActive($(this));
 			});
             _this.addActive(obj);
@@ -244,17 +270,17 @@
         // item hover down event
 		onMouseDown : function(obj){
             var _this = this;
-			_this.obj.val(obj.html());
+			_this.$element.val(obj.html());
 			_this.hidden();
 			_this.onCallBack();
 		},
         // callback function
 		onCallBack : function(){
             var _this = this;
-			if(typeof _this.opts.callback == 'function'){
-				_this.opts.callback();
+			if(typeof _this.options.callback == 'function'){
+				_this.options.callback();
 			}else{
-				console.log(_this.opts.callback);
+				console.log(_this.options.callback);
 			}
 		},
         // prevent form submit function
@@ -263,9 +289,9 @@
 			if($('form').length){ // has form table
 				$('form').submit(function(value){
 					if(_this.active != -1){
-						_this.obj.val(_this.containerItem.eq(_this.active).html());
+						_this.$element.val(_this.$containerItem.eq(_this.active).html());
 						_this.hidden();
-						_this.onCallBack();//回车执行回调
+						_this.onCallBack();
 						return false;
 					}
 				});
@@ -273,13 +299,28 @@
         },
 	}
 
-    /**
-     * [plugin defaults config]
-     */
-	$.fn.emailComplete.defaults = {
-		opacity : 1, // email container opacity
-		borderRadius: 0, // email container border-radius (px)
-		data : ['qq.com','163.com','126.com','sina.com','sohu.com'], // email suffix
-		callback : $.noop // callback
+	$.fn[Fidding.pluginName] = function (options) {
+		return this.each(function (e) {
+			var _this = $(this);
+            var data = _this.data(Fidding.dataName);
+            //var options = typeof option == 'object' && option;
+            // cache data object
+            if (!data) {
+                _this.data(Fidding.dataName, (data = new Fidding(this, options)));
+            }
+            //If the name of the plug-parameter is a string, then directly call widget method for this string
+            if (typeof option == 'string') data[option]();
+		});
 	}
+
+    $.fn[Fidding.pluginName].Constructor = Fidding;
+
+    // data-role='emailComplete'
+    $(document).ready(function () {
+        $('[data-role="'+Fidding.pluginName+'"]').each(function () {
+            var _this = $(this);
+            var data = _this.data();
+            $.fn[Fidding.pluginName].call(_this, data);
+        });
+    });
 })

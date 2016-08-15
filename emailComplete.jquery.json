@@ -6,7 +6,7 @@
         "email",
         "complete"
     ],
-    "version": "2.1.1",
+    "version": "3.0.0",
     "author": {
         "name": "fidding",
         "url": "https://github.com/fidding"
@@ -28,6 +28,7 @@
     "homepage": "https://github.com/fidding/emailComplete",
     "docs": "https://github.com/fidding/emailComplete/readme.md",
     "download": "https://github.com/fidding/emailComplete",
+    "demo": "https://fidding.github.io/emailComplete",
     "dependencies": {
         "jquery": ">=1.5"
     }
