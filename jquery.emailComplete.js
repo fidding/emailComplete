@@ -1,7 +1,7 @@
 /*
  * jquery.emailComplete.js - jQuery Plugin for Email Complete
  *
- * Version: v3.0.0
+ * Version: v3.1.1
  *
  * Author: fidding
  * blog: http://www.fidding.me/
@@ -55,7 +55,7 @@
      */
     Fidding.defaults = {
 		opacity : 1, // email container opacity
-		borderRadius: 0, // email container border-radius (px)
+		radius: 0, // email container border-radius (px)
 		data : ['qq.com','163.com','126.com','sina.com','sohu.com'], // email suffix
 		callback : $.noop // callback
 
@@ -71,15 +71,9 @@
             // assignment objects
             _this.$element = $(element);
             _this.$parent = _this.$element.parent();
-			_this.$element.after('<div class="complete-container" style="border-radius:'+_this.options.borderRadius+'px;opacity:'+_this.options.opacity+'"></div>');
+			_this.$element.after('<div class="complete-container" style="border-radius:'+_this.options.radius+'px;opacity:'+_this.options.opacity+'"></div>');
             _this.$container = _this.$element.next( ".complete-container" );
 			_this.$containerItem = _this.$container.find('div.complete-item');
-            // set position
-			_this.setPos(_this.getPos());
-
-		    $(window).resize(function () {
-			    _this.setPos(_this.getPos());
-		    });
             // input event
 		    _this.$element.on('input', function (e) {
 			    if(_this.$element.val() == ''){
@@ -130,7 +124,7 @@
 			    height = _this.$element.outerHeight(),
 			    top = _this.$element.position().top+height+3,
 			    left = _this.$element.position().left;
-			return { top:top , left:left, width:width };
+			return { top: top, left: left, width: width };
 		},
         // set email position
 		setPos : function(data){
@@ -140,6 +134,7 @@
         // show email container
 		show : function(){
             var _this = this;
+            _this.setPos(_this.getPos());//set container position
 			_this.$container.css({'visibility':'visible'});
 		},
         // hidden email container
