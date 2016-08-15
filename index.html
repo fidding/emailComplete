@@ -11,7 +11,7 @@
          form{
              padding-top:30px;
          }
-         input#email{
+         input{
              outline: 0;
              height: 34px;
              width:250px;
@@ -79,17 +79,26 @@
     <body id="body">
 	    <h1>jQuery emailComplete Demo By fidding</h1>
 	    <form>
-            <input id="email" placeholder="请输入您的邮箱地址" />
+            <h4>js调用</h4>
+            <input id="email" placeholder="请输入您的邮箱地址, js调用" />
 	    </form>
+        <form>
+            <h4>data调用</h4>
+            <input data-role="emailComplete" data-opacity="0.9" data-borderRadius="1" placeholder="请输入您的邮箱地址, data调用" />
+	    </form>
+
     </body>
     <script src="./jquery-1.9.0.min.js"></script>
 	<script src="./jquery.emailComplete.js"></script>
     <script>
      $(function () {
+
          $('#email').emailComplete({
-             opacity: 0.8,
+             opacity: 0.7,
 		     borderRadius: 4
          });
+
+         //Author
          console.log('%c By: 洪加煌 ', 'background-image:-webkit-gradient( linear, left top, right top, color-stop(0, #f22), color-stop(0.15, #f2f), color-stop(0.3, #22f), color-stop(0.45, #2ff), color-stop(0.6, #2f2),color-stop(0.75, #2f2), color-stop(0.9, #ff2), color-stop(1, #f22) );color:transparent;-webkit-background-clip: text;font-size:1em;');
 
      })
