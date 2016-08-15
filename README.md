@@ -13,7 +13,7 @@ $('element').emailComplete();
 or
 
 ``` html
-<input data-role="emailComplete" data-opacity="0.9" data-borderRadius="1" />
+<input data-role="emailComplete" data-opacity="0.9" data-radius="1" />
 ```
 
 ## Params

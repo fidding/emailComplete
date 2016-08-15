@@ -1,7 +1,7 @@
 /*
  * jquery.emailComplete.js - jQuery Plugin for Email Complete
  *
- * Version: v3.1.1
+ * Version: v3.1.2
  *
  * Author: fidding
  * blog: http://www.fidding.me/
